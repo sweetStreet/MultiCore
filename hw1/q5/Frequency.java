@@ -7,6 +7,7 @@ public class Frequency implements Callable<Integer> {
         //your implementation goes here, return -1 if the input is not valid.
     }
 
+    //changed by Yizhuo
     @Override
     public Integer call() throws Exception {
         return null;
