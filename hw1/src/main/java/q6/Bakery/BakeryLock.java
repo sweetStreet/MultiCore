@@ -9,7 +9,6 @@ public class BakeryLock implements Lock {
     int n;
 
     public BakeryLock(int numThreads){
-        // your implementation goes here.
         this.n = numThreads;
         flag = new AtomicBoolean[n];
         label = new AtomicInteger[n];

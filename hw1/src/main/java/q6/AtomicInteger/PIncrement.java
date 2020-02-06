@@ -7,22 +7,32 @@ public class PIncrement implements Runnable{
     public static AtomicInteger sharedVariable;
     public static int numThreads;
     public final static int target = 1200000;
+    public static int[] tasks;
+    public int pid;
+
+    public PIncrement(int pid){
+        this.pid = pid;
+    }
 
     public static int parallelIncrement(int c, int numThreads){
         sharedVariable = new AtomicInteger(c);
         PIncrement.numThreads = numThreads;
 
-        Thread[] threads = new Thread[numThreads];
         // distribute task to each thread
-        int[] tasks = new int[numThreads];
-        int base = c / numThreads;
-        for (int i = 0; i < numThreads-1; i++) {
+        tasks = new int[numThreads];
+        int base = target / numThreads;
+        int left = target % numThreads;
+        for (int i = 0; i < numThreads; i++) {
             tasks[i] = base;
+            if(i<left){
+                tasks[i]++;
+            }
         }
-        tasks[numThreads - 1] = c - (base * (numThreads - 1));
 
+        // create and start the threads
+        Thread[] threads = new Thread[numThreads];
         for(int i = 0; i < numThreads; i++){
-            threads[i] = new Thread(new PIncrement());
+            threads[i] = new Thread(new PIncrement(i));
             threads[i].start();
         }
 
@@ -38,7 +48,7 @@ public class PIncrement implements Runnable{
 
     @Override
     public void run() {
-        for (int i = 0; i < numThreads; ++i) {
+        for (int i = 0; i < tasks[pid]; ++i) {
             while(true){
                 int currentValue = sharedVariable.get();
                 if(sharedVariable.compareAndSet(currentValue, currentValue+1)){
