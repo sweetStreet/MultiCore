@@ -8,7 +8,7 @@ public class PIncrement implements Runnable{
     private static BakeryLock bakeryLock;
     private static int[] tasks;
     public final static int target = 1200000;
-    public static int pid;
+    public int pid;
     public static int sharedVariable;
 
     public PIncrement(int pid){

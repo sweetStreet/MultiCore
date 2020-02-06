@@ -27,7 +27,7 @@ public class BakeryLock implements Lock {
             max = Math.max(max, label[i].get());
         }
         label[pid].set(max+1);
-        flag[pid].set(true);
+        flag[pid].set(false);
 
         // check if the my number is the smallest
         for(int i = 0; i<n; i++){
