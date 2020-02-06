@@ -50,10 +50,10 @@ public class PIncrement implements Runnable{
 
     @Override
     public void run() {
-        bakeryLock.lock(pid);
         for(int i = 0; i<tasks[pid]; i++){
+            bakeryLock.lock(pid);
             sharedVariable = sharedVariable+1;
+            bakeryLock.unlock(pid);
         }
-        bakeryLock.unlock(pid);
     }
 }

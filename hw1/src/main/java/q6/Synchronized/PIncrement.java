@@ -1,5 +1,6 @@
 package q6.Synchronized;
 
+import javax.sound.midi.Soundbank;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PIncrement implements Runnable{
@@ -45,12 +46,14 @@ public class PIncrement implements Runnable{
         return sharedVariable;
     }
 
+    public static synchronized void increaseByOne(){
+        sharedVariable = sharedVariable+1;
+    };
+
     @Override
     public void run() {
-        synchronized (this){
-            for (int i = 0; i < tasks[pid]; ++i) {
-                sharedVariable = sharedVariable + 1;
-            }
+        for (int i = 0; i < tasks[pid]; ++i) {
+            increaseByOne();
         }
     }
 }
