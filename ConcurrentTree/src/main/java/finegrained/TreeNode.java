@@ -17,8 +17,7 @@ public class TreeNode<T extends Comparable>{
 
     public void setLock(){
         try {
-            if (lock != null)
-                lock.lock();
+            lock.lock();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -26,8 +25,7 @@ public class TreeNode<T extends Comparable>{
 
     public void unlock(){
         try {
-            if (lock != null)
-                lock.unlock();
+            lock.unlock();
         }catch(Exception e){
             e.printStackTrace();
         }

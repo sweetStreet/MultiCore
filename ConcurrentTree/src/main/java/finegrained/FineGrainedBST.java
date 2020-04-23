@@ -5,75 +5,76 @@ import bst.BST;
 public class FineGrainedBST<T extends Comparable> implements BST<T> {
     TreeNode<T> root;
 
-
     public boolean contains(T val) {
+        if(root == null){
+            return false;
+        }
         TreeNode current = root;
+        current.setLock();
         while(current!=null){
             if(current.val.compareTo(val) == 0){
                 current.unlock();
                 return true;
             }else {
-                current.parent.unlock();
                 if (current.val.compareTo(val) > 0) {
                     current = current.left;
                 } else {
                     current = current.right;
                 }
                 current.setLock();
+                current.parent.unlock();
             }
         }
-        current.unlock();
         return false;
     }
 
     public boolean insert(T val) {
-        //todo
         TreeNode newNode = new TreeNode(val);
         if(root==null){
             root = newNode;
+            root.parent = root;
             return true;
         }
         TreeNode current = root;
-        TreeNode parent = current;
-        parent.setLock();
+        current.setLock();
         while(true){
             if(val.compareTo(current.val)==0){
-                parent.unlock();
+                current.unlock();
                 return false;
             }
             if(val.compareTo(current.val)<0){
-                current = current.left;
-                current.setLock();
-
-                if(current==null){
-                    parent.left = newNode;
-                    newNode.parent = parent;
-
-                    parent.unlock();
+                if(current.left==null){
+                    current.left = newNode;
+                    newNode.parent = current;
                     current.unlock();
                     return true;
                 }
+                current = current.left;
             }else{
-                current = current.right;
-                current.setLock();
-
-                if(current==null){
-                    parent.right = newNode;
-                    newNode.parent = parent;
+                if(current.right==null){
+                    current.right = newNode;
+                    newNode.parent = current;
                     return true;
                 }
+                current = current.right;
             }
-            parent.unlock();
-            parent = current;
+            current.setLock();
+            current.parent.unlock();
+            System.out.println(current.parent.val+" "+current.val);
+
         }
     }
 
     public boolean remove(T val) {
+        if(root == null){
+            return false;
+        }
         TreeNode parent = root;
         TreeNode current = root;
         boolean isLeftChild = false;
+
+        parent.setLock();
         while(current.val != val){
-            parent = current;
             if(current.val.compareTo(val) > 0){
                 isLeftChild = true;
                 current = current.left;
@@ -81,9 +82,13 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
                 isLeftChild = false;
                 current = current.right;
             }
+            parent.unlock();
+            current.setLock();
             if(current == null){
+                parent.unlock();
                 return false;
             }
+            parent = current;
         }
         //case 1: node to be deleted has no children
         if(current.left == null && current.right == null){
