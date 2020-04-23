@@ -21,8 +21,10 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
                 } else {
                     current = current.right;
                 }
-                current.setLock();
-                current.parent.unlock();
+                if(current!=null) {
+                    current.setLock();
+                    current.parent.unlock();
+                }
             }
         }
         return false;
@@ -54,14 +56,13 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
                 if(current.right==null){
                     current.right = newNode;
                     newNode.parent = current;
+                    current.unlock();
                     return true;
                 }
                 current = current.right;
             }
             current.setLock();
             current.parent.unlock();
-            System.out.println(current.parent.val+" "+current.val);
-
         }
     }
 

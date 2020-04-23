@@ -31,14 +31,19 @@ public class TestFineGrainedlBST {
 //            int n = rand.nextInt(100);
             System.out.println(i+" "+tree.contains(i));
         }
+
+//        System.out.println(((FineGrainedBST) tree).root.left.left.val);
+//        System.out.println(((FineGrainedBST) tree).root.left.right.val);
+        printTree(((FineGrainedBST) tree).root, "");
     }
 
     private void makeThread(BST bst) {
-        Thread[] threads = new Thread[3];
-        threads[0] = new Thread(new MyThread(0, 2, bst));
-        threads[1] = new Thread(new MyThread(0, 3, bst));
-        threads[2] = new Thread(new MyThread(1, 3, bst));
-        threads[1].start(); threads[0].start(); threads[2].start();
+        Thread[] threads = new Thread[4];
+        threads[0] = new Thread(new MyThread(20, 40, bst));
+        threads[1] = new Thread(new MyThread(0, 20, bst));
+        threads[2] = new Thread(new MyThread(60, 80, bst));
+        threads[3] = new Thread(new MyThread(40, 60, bst));
+        threads[1].start(); threads[0].start(); threads[2].start();threads[3].start();
 
         for (Thread thread : threads) {
             try {
@@ -47,6 +52,16 @@ public class TestFineGrainedlBST {
                 e.printStackTrace();
             }
         }
+    }
+
+    private int COUNT = 1;
+    private void printTree(TreeNode node, String prefix)
+    {
+        if(node == null) return;
+
+        System.out.println(prefix + " + " + node.val);
+        printTree(node.left , prefix + " ");
+        printTree(node.right , prefix + " ");
     }
 
     private void checkNode(int start, int end, BST bst) {
@@ -72,9 +87,18 @@ public class TestFineGrainedlBST {
 
         @Override
         public void run() {
-            for (int i = begin; i <= end; ++i) {
-                System.out.println(bst.insert(i));
+            int mid = (begin+end)/2;
+            int left = begin;
+            int right = end;
+            while(left<=mid+1){
+                bst.insert(left);
+                bst.insert(right);
+                left ++;
+                right --;
             }
+//            for (int i = begin; i <= end; ++i) {
+//                bst.insert(i);
+//            }
         }
     }
 }
