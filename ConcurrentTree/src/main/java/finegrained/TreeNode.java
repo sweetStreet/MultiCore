@@ -19,7 +19,7 @@ public class TreeNode<T extends Comparable>{
         try {
             lock.lock();
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -27,7 +27,8 @@ public class TreeNode<T extends Comparable>{
         try {
             lock.unlock();
         }catch(Exception e){
-            e.printStackTrace();
+//            System.out.println(val);
+//            e.printStackTrace();
         }
     }
 

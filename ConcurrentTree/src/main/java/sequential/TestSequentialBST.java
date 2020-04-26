@@ -6,6 +6,12 @@ import java.util.Random;
 
 public class TestSequentialBST {
     @Test
+    public void test2(){
+        BST tree = new SequentialBST();
+        tree.insert(1);
+        for(int i = 0; i<1; i++)
+            System.out.println( tree.remove(1) );
+    }
     public void test1(){
         BST tree = new SequentialBST();
         int begin = 0;

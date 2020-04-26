@@ -10,20 +10,14 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
             return false;
         }
         TreeNode current = root;
-        current.setLock();
         while(current!=null){
             if(current.val.compareTo(val) == 0){
-                current.unlock();
                 return true;
             }else {
                 if (current.val.compareTo(val) > 0) {
                     current = current.left;
                 } else {
                     current = current.right;
-                }
-                if(current!=null) {
-                    current.setLock();
-                    current.parent.unlock();
                 }
             }
         }
@@ -34,35 +28,36 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
         TreeNode newNode = new TreeNode(val);
         if(root==null){
             root = newNode;
-            root.parent = root;
             return true;
         }
         TreeNode current = root;
-        current.setLock();
+        current.lock.lock();
         while(true){
             if(val.compareTo(current.val)==0){
-                current.unlock();
+                current.lock.unlock();
                 return false;
             }
             if(val.compareTo(current.val)<0){
                 if(current.left==null){
                     current.left = newNode;
                     newNode.parent = current;
-                    current.unlock();
+                    current.lock.unlock();
                     return true;
                 }
                 current = current.left;
+                current.parent.lock.unlock();
+                current.lock.lock();
             }else{
                 if(current.right==null){
                     current.right = newNode;
                     newNode.parent = current;
-                    current.unlock();
+                    current.lock.unlock();
                     return true;
                 }
                 current = current.right;
+                current.parent.lock.unlock();
+                current.lock.lock();
             }
-            current.setLock();
-            current.parent.unlock();
         }
     }
 
@@ -70,36 +65,36 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
         if(root == null){
             return false;
         }
-        TreeNode parent = root;
         TreeNode current = root;
         boolean isLeftChild = false;
 
-        parent.setLock();
+        current.setLock();
         while(current.val != val){
             if(current.val.compareTo(val) > 0){
                 isLeftChild = true;
+                if(current.left == null){
+                    current.unlock();
+                    return false;
+                }
                 current = current.left;
             }else{
                 isLeftChild = false;
+                if(current.right == null){
+                    current.unlock();
+                    return false;
+                }
                 current = current.right;
             }
-            parent.unlock();
+            current.parent.parent.unlock();
             current.setLock();
-            if(current == null){
-                parent.unlock();
-                return false;
-            }
-            parent = current;
         }
+
         //case 1: node to be deleted has no children
         if(current.left == null && current.right == null){
-            if(current == root) {
-                root = null;
-            }
             if(isLeftChild){
-                parent.left = current.left;
+                current.parent.left = null;
             }else{
-                parent.right = current.right;
+                current.parent.right = null;
             }
         }
 
@@ -108,17 +103,17 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
             if(current==root){
                 root = current.left;
             }else if(isLeftChild){
-                parent.left = current.left;
+                current.parent.left = current.left;
             }else{
-                parent.right = current.left;
+                current.parent.right = current.left;
             }
         }else if(current.left == null){
             if(current==root){
                 root = current.right;
             }else if(isLeftChild){
-                parent.left = current.right;
+                current.parent.left = current.right;
             }else{
-                parent.right = current.right;
+                current.parent.right = current.right;
             }
         }
 
@@ -126,15 +121,67 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
         else if(current.left != null && current.right != null){
             //now we have found the minimum element in the right sub tree
             TreeNode successor	 = getSuccessor(current);
+            successor.setLock();
             if(current==root){
                 root = successor;
             }else if(isLeftChild){
-                parent.left = successor;
+                current.parent.left = successor;
             }else{
-                parent.right = successor;
+                current.parent.right = successor;
             }
             successor.left = current.left;
+            successor.unlock();
         }
+
+//        //case 1: node to be deleted has no children
+//        if(current.left == null && current.right == null){
+//            if((current.val.compareTo(root.val))==0) {
+//                current.unlock();
+//                root = null;
+//                return true;
+//            }
+//            if(isLeftChild){
+//                current.parent.left = current.left;
+//            }else{
+//                current.parent.right = current.right;
+//            }
+//        }
+//
+//        //case 2: if the node to be deleted has only one child
+//        else if(current.right == null){
+//            if(current==root){
+//                root = current.left;
+//            }else if(isLeftChild){
+//                current.parent.left = current.left;
+//            }else{
+//                current.parent.right = current.left;
+//            }
+//        }else if(current.left == null){
+//            if(current==root){
+//                root = current.right;
+//            }else if(isLeftChild){
+//                current.parent.left = current.right;
+//            }else{
+//                current.parent.right = current.right;
+//            }
+//        }
+//
+//        //case 3: the node has 2 children
+//        else if(current.left != null && current.right != null){
+//            //now we have found the minimum element in the right sub tree
+//            TreeNode successor	 = getSuccessor(current);
+//            successor.setLock();
+//            if(current==root){
+//                root = successor;
+//            }else if(isLeftChild){
+//                current.parent.left = successor;
+//            }else{
+//                current.parent.right = successor;
+//            }
+//            successor.left = current.left;
+//            successor.unlock();
+//        }
+//        current.unlock();
         return true;
     }
 
