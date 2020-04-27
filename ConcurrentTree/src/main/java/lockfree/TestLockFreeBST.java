@@ -1,6 +1,8 @@
-package finegrained;
+package lockfree;
 
 import bst.BSTInterface;
+import finegrained.FineGrainedBST;
+import finegrained.TreeNode;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -8,8 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class TestFineGrainedlBST{
-    int totalnum = 100;
+public class TestLockFreeBST {
+    int totalnum = 10000;
     int[] threadnums = {1, 2, 4, 8};
     List times;
 
@@ -57,14 +59,12 @@ public class TestFineGrainedlBST{
         //inset node in sequence, no duplicate
         times = new ArrayList<Long>();
         for(int i = 0; i<threadnums.length; i++){
-            BSTInterface tree = new FineGrainedBST();
+            BSTInterface tree = new LockFreeBST();
             makeThread1(tree, threadnums[i]);
-
         }
         for(int i = 0; i<threadnums.length; i++){
             System.out.println("When there are "+threadnums[i]+" threads, "+"it takes "+times.get(i)+" ms");
         }
-
     }
 
     @Test
@@ -72,7 +72,7 @@ public class TestFineGrainedlBST{
         //inset node in sequence, with duplicate
         times = new ArrayList<Long>();
         for(int i = 0; i<threadnums.length; i++){
-            BSTInterface tree = new FineGrainedBST();
+            BSTInterface tree = new LockFreeBST();
             makeThread2(tree, threadnums[i]);
         }
         for(int i = 0; i<threadnums.length; i++){
@@ -85,7 +85,7 @@ public class TestFineGrainedlBST{
         //random generate
         times = new ArrayList<Long>();
         for(int i = 0; i<threadnums.length; i++){
-            BSTInterface tree = new FineGrainedBST();
+            BSTInterface tree = new LockFreeBST();
             makeThread3(tree, threadnums[i]);
         }
         for(int i = 0; i<threadnums.length; i++){
