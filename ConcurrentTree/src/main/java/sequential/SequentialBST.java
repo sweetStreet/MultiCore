@@ -1,14 +1,14 @@
 package sequential;
 
-import bst.BST;
+import bst.BSTInterface;
 
-public class SequentialBST<T extends Comparable> implements BST<T> {
+public class SequentialBST<T extends Comparable> implements BSTInterface<T> {
     Node root;
 
     public SequentialBST(){
         this.root = null;
     }
-    public boolean contains(T val) {
+    public boolean search(T val) {
         Node current = root;
         while(current!=null){
             if(current.data.compareTo(val) == 0){
@@ -52,7 +52,7 @@ public class SequentialBST<T extends Comparable> implements BST<T> {
         }
     }
 
-    public boolean remove(T val) {
+    public boolean delete(T val) {
         Node parent = root;
         Node current = root;
         boolean isLeftChild = false;

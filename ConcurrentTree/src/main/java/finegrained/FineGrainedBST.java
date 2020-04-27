@@ -1,11 +1,11 @@
 package finegrained;
 
-import bst.BST;
+import bst.BSTInterface;
 
-public class FineGrainedBST<T extends Comparable> implements BST<T> {
+public class FineGrainedBST<T extends Comparable> implements BSTInterface<T> {
     TreeNode<T> root;
 
-    public boolean contains(T val) {
+    public boolean search(T val) {
         if(root == null){
             return false;
         }
@@ -61,7 +61,7 @@ public class FineGrainedBST<T extends Comparable> implements BST<T> {
         }
     }
 
-    public boolean remove(T val) {
+    public boolean delete(T val) {
         if(root == null){
             return false;
         }

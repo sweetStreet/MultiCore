@@ -1,19 +1,19 @@
 package sequential;
 
-import bst.BST;
+import bst.BSTInterface;
 import org.junit.Test;
 import java.util.Random;
 
 public class TestSequentialBST {
     @Test
     public void test2(){
-        BST tree = new SequentialBST();
+        BSTInterface tree = new SequentialBST();
         tree.insert(1);
         for(int i = 0; i<1; i++)
-            System.out.println( tree.remove(1) );
+            System.out.println( tree.delete(1) );
     }
     public void test1(){
-        BST tree = new SequentialBST();
+        BSTInterface tree = new SequentialBST();
         int begin = 0;
         int end = 1000;
         int mid = (begin+end)/2;
@@ -39,14 +39,14 @@ public class TestSequentialBST {
         for(int i = 0; i<10; i++) {
             Random rand = new Random();
             int n = rand.nextInt(100);
-            tree.remove(n);
+            tree.delete(n);
 //            System.out.println(n + " " + tree.remove(n));
         }
 
         for(int i = 0; i<100; i++) {
 //            Random rand = new Random();
 //            int n = rand.nextInt(100);
-            System.out.println(i+" "+tree.contains(i));
+            System.out.println(i+" "+tree.search(i));
         }
     }
 
