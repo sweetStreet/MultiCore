@@ -116,6 +116,21 @@ public class SequentialBST<T extends Comparable> implements BSTInterface<T> {
         return true;
     }
 
+    @Override
+    public void printNode() {
+
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
+    public int getNum() {
+        return 0;
+    }
+
     public Node getSuccessor(Node deleteNode){
         Node successsor =null;
         Node successsorParent =null;

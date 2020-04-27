@@ -7,4 +7,10 @@ public interface BSTInterface<T extends Comparable> {
     boolean insert(T val);
 
     boolean delete(T val);
+
+    void printNode();
+
+    int getHeight();
+
+    int getNum();
 }

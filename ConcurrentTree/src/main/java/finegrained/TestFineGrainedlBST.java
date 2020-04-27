@@ -9,47 +9,15 @@ import java.util.List;
 
 
 public class TestFineGrainedlBST{
-    int totalnum = 100;
+    int totalnum = 10000;
     int[] threadnums = {1, 2, 4, 8};
+//    int[] threadnums = {4};
     List times;
 
 //    @Test
     public void test(){
-        TreeNode node = new TreeNode(1);
-        makeThread(8, node);
-    }
-
-    private void makeThread(int threadnum, TreeNode node) {
-        Thread[] threads = new Thread[threadnum];
-
-        for(int i = 0; i<threadnum; i++){
-            threads[i] = new Thread(new MyThread(node));
-            threads[i].start();
-        }
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        long endTime=System.currentTimeMillis();
-    }
-
-    private class MyThread implements Runnable {
-        TreeNode node;
-
-        MyThread(TreeNode node) {
-            this.node = node;
-        }
-
-        public void run() {
-            node.setLock();
-            node.setLock();
-            node.setLock();
-            node.unlock();
-            node.unlock();
-        }
+        BSTInterface bst = new FineGrainedBST();
+        makeThread(4, bst, 0 ,20);
     }
 
     @Test
@@ -59,6 +27,14 @@ public class TestFineGrainedlBST{
         for(int i = 0; i<threadnums.length; i++){
             BSTInterface tree = new FineGrainedBST();
             makeThread1(tree, threadnums[i]);
+//            tree.printNode();
+            System.out.println( "When there are "+threadnums[i] + "threads, there are "+tree.getNum() + " nodes");
+
+            long startTime=System.currentTimeMillis();
+            for(int k = 0; k<100; k++)
+                tree.search(totalnum/2);
+            long endTime=System.currentTimeMillis();
+            System.out.println( "When there are "+threadnums[i] + "threads, the search takes "+ (endTime-startTime) + " ms");
 
         }
         for(int i = 0; i<threadnums.length; i++){
@@ -69,11 +45,18 @@ public class TestFineGrainedlBST{
 
     @Test
     public void test2(){
-        //inset node in sequence, with duplicate
+        //each thread insert the same number
         times = new ArrayList<Long>();
         for(int i = 0; i<threadnums.length; i++){
             BSTInterface tree = new FineGrainedBST();
             makeThread2(tree, threadnums[i]);
+            System.out.println( "When there are "+threadnums[i] + "threads, there are "+tree.getNum() + " nodes");
+
+            long startTime=System.currentTimeMillis();
+            for(int k = 0; k<100; k++)
+                tree.search(totalnum/2);
+            long endTime=System.currentTimeMillis();
+            System.out.println( "When there are "+threadnums[i] + "threads, the search takes "+ (endTime-startTime) + " ms");
         }
         for(int i = 0; i<threadnums.length; i++){
             System.out.println("When there are "+threadnums[i]+" threads, "+"it takes "+times.get(i)+" ms");
@@ -87,11 +70,64 @@ public class TestFineGrainedlBST{
         for(int i = 0; i<threadnums.length; i++){
             BSTInterface tree = new FineGrainedBST();
             makeThread3(tree, threadnums[i]);
+            System.out.println( "When there are "+threadnums[i] + "threads, there are "+tree.getNum() + " nodes");
+
+            long startTime=System.currentTimeMillis();
+            for(int k = 0; k<100; k++)
+                tree.search(totalnum/2);
+            long endTime=System.currentTimeMillis();
+            System.out.println( "When there are "+threadnums[i] + "threads, the search takes "+ (endTime-startTime) + " ms");
         }
         for(int i = 0; i<threadnums.length; i++){
             System.out.println("When there are "+threadnums[i]+" threads, "+"it takes "+times.get(i)+" ms");
         }
     }
+
+    private void makeThread(int threadnum, BSTInterface bst, int begin, int end) {
+        Thread[] threads = new Thread[threadnum];
+
+        for(int i = 0; i<threadnum; i++){
+            threads[i] = new Thread(new MyThread(begin, end, bst));
+            threads[i].start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private class MyThread implements Runnable {
+        int begin;
+        int end;
+        BSTInterface bstInterface;
+
+        MyThread(int begin, int end, BSTInterface bstInterface) {
+            this.begin = begin;
+            this.end = end;
+            this.bstInterface = bstInterface;
+        }
+
+        public void run() {
+            for(int i = begin; i<=end; i++){
+                bstInterface.insert(i);
+//                System.out.println(i);
+            }
+
+            for(int i = begin; i<=end; i++){
+                bstInterface.delete(i);
+            }
+            for(int i = begin; i<=end; i++){
+                bstInterface.search(i);
+            }
+        }
+
+    }
+
+
 
     private void makeThread1(BSTInterface bstInterface, int threadnum) {
         Thread[] threads = new Thread[threadnum];
@@ -136,7 +172,7 @@ public class TestFineGrainedlBST{
         long startTime=System.currentTimeMillis();
         int eachthread = totalnum/threadnum;
         for(int i = 0; i<threadnum; i++){
-            threads[i] = new Thread(new MyThread1(i*eachthread, (i+2)*eachthread, bstInterface));
+            threads[i] = new Thread(new MyThread1(0, totalnum-1, bstInterface));
             threads[i].start();
         }
         for (Thread thread : threads) {
@@ -188,8 +224,8 @@ public class TestFineGrainedlBST{
         }
 
         public void run() {
-            for(int i = begin; i<=end; i++){
-                bstInterface.insert(i);
+            for(int i = begin; i<=end && i<list.size(); i++){
+                bstInterface.insert((Comparable) list.get(i));
             }
         }
     }
