@@ -193,13 +193,13 @@ public class FineGrainedBST<T extends Comparable> implements BSTInterface<T> {
         return getNumhelper(root);
     }
 
+
     public int getNumhelper(TreeNode node){
         if(node == null){
             return 0;
         }
         return 1 + getNumhelper(node.left) + getNumhelper(node.right);
     }
-
 
     private void printNodeInternal(List<TreeNode> nodes, int level, int maxLevel) {
         if (nodes.isEmpty() || isAllElementsNull(nodes))

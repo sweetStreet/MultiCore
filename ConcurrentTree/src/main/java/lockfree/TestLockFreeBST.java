@@ -35,7 +35,6 @@ public class TestLockFreeBST {
                 e.printStackTrace();
             }
         }
-        long endTime=System.currentTimeMillis();
     }
 
     private class MyThread implements Runnable {
@@ -61,6 +60,14 @@ public class TestLockFreeBST {
         for(int i = 0; i<threadnums.length; i++){
             BSTInterface tree = new LockFreeBST();
             makeThread1(tree, threadnums[i]);
+
+            System.out.println( "When there are "+threadnums[i] + " threads, there are "+tree.getNum() + " nodes");
+
+            long startTime=System.currentTimeMillis();
+            for(int k = 0; k<100; k++)
+                tree.search(totalnum/2);
+            long endTime=System.currentTimeMillis();
+            System.out.println( "When there are "+threadnums[i] + "threads, the search takes "+ (endTime-startTime) + " ms");
         }
         for(int i = 0; i<threadnums.length; i++){
             System.out.println("When there are "+threadnums[i]+" threads, "+"it takes "+times.get(i)+" ms");
@@ -74,6 +81,15 @@ public class TestLockFreeBST {
         for(int i = 0; i<threadnums.length; i++){
             BSTInterface tree = new LockFreeBST();
             makeThread2(tree, threadnums[i]);
+
+
+            System.out.println( "When there are "+threadnums[i] + "threads, there are "+tree.getNum() + " nodes");
+
+            long startTime=System.currentTimeMillis();
+            for(int k = 0; k<100; k++)
+                tree.search(totalnum/2);
+            long endTime=System.currentTimeMillis();
+            System.out.println( "When there are "+threadnums[i] + "threads, the search takes "+ (endTime-startTime) + " ms");
         }
         for(int i = 0; i<threadnums.length; i++){
             System.out.println("When there are "+threadnums[i]+" threads, "+"it takes "+times.get(i)+" ms");
@@ -87,6 +103,14 @@ public class TestLockFreeBST {
         for(int i = 0; i<threadnums.length; i++){
             BSTInterface tree = new LockFreeBST();
             makeThread3(tree, threadnums[i]);
+
+            System.out.println( "When there are "+threadnums[i] + "threads, there are "+tree.getNum() + " nodes");
+
+            long startTime=System.currentTimeMillis();
+            for(int k = 0; k<100; k++)
+                tree.search(totalnum/2);
+            long endTime=System.currentTimeMillis();
+            System.out.println( "When there are "+threadnums[i] + "threads, the search takes "+ (endTime-startTime) + " ms");
         }
         for(int i = 0; i<threadnums.length; i++){
             System.out.println("When there are "+threadnums[i]+" threads, "+"it takes "+times.get(i)+" ms");
